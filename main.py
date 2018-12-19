@@ -7,7 +7,7 @@ led=LED.create(Pin(23,Pin.OUT))
 led.on()
 time.sleep(1)
 
-led.flash()
+led.flash(1)
 time.sleep(6)
 
 for _ in range (3):

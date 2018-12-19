@@ -1,14 +1,15 @@
 from machine import PWM
 
 class LED:
-    max_freq = 78125
+    freq = 100 #100 Hz is OK, you can make it large.
     max_duty = 1023
     pwm = None
     pin = None
 
     # p is pin of LED
-    def __init__(self, p, c):
+    def __init__(self, p, c, f):
         self.pin = p
+        self.freq = f
         if c=='on':
             self.on()
         else:
@@ -24,20 +25,19 @@ class LED:
             self.pwm.deinit()
             self.pin(1)
             return
-        freq = int(self.max_freq * l)
         duty = int(self.max_duty * l)
-        self.pwm = PWM(self.pin, freq=freq, duty=duty)
+        self.pwm = PWM(self.pin, freq=self.freq, duty=duty)
     
-    # flash 1 Hz
-    def flash(self):
-        self.pwm = PWM(self.pin, freq=int(1), duty=int(self.max_duty / 3 * 2))
+    # flash freq Hz
+    def flash(self,freq):
+        self.pwm = PWM(self.pin, freq=int(freq), duty=int(self.max_duty / 3 * 2)) # 2/3
     
     def off(self):
         self.pwm = PWM(self.pin, freq=1, duty=0)
         self.pwm.deinit()
 
     def on(self):
-        self.pwm = PWM(self.pin, freq=self.max_freq, duty=self.max_duty)
+        self.pwm = PWM(self.pin, freq=self.freq, duty=self.max_duty)
 
-def create(p, c='off'):
-    return LED(p,c)
+def create(pin, command='off', freq=100):
+    return LED(pin,command,freq)
